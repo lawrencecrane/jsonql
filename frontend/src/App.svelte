@@ -1,5 +1,16 @@
 <script lang="ts">
-    export let name: string
+    import { onDestroy } from 'svelte'
+    import { store } from './store'
+
+    // -- Properties
+    let name: string
+    // --
+
+    const unsubscribe = store.name.subscribe((value) => {
+        name = value
+    })
+
+    onDestroy(unsubscribe)
 </script>
 
 <style>
