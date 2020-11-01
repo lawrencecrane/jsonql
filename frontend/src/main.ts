@@ -10,6 +10,14 @@ store.name.set('hello from the otherside!')
 
 const socket = io(envThis.__WEBSOCKET_URI__)
 
-socket.on('connect', () => socket.emit('jsonql', 'hello from the otherside'))
+socket.on('connect', () =>
+    socket.emit('jsonql', {
+        messages: {
+            fields: ['user', 'message'],
+        },
+    })
+)
+
+socket.on('jsonql', console.log)
 
 export default app
