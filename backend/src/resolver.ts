@@ -1,11 +1,12 @@
+import socketIo from 'socket.io'
 import { Resolver } from 'jsonql'
-import { Context, schema } from './schema'
+import { Model, Types } from './schema'
 
-export const resolver: Resolver<
-    Context,
-    typeof schema.types,
-    typeof schema.model
-> = {
+export interface Context {
+    socket: socketIo.Socket
+}
+
+export const resolver: Resolver<Context, Types, Model> = {
     messages: () =>
         Promise.resolve([
             { user: 'joe', message: 'Hello from the otherside!' },

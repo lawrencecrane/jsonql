@@ -1,11 +1,6 @@
-import socketIo from 'socket.io'
-import { Schema, Types } from 'jsonql'
+import { Schema, Types as _Types } from 'jsonql'
 
-export interface Context {
-    socket: socketIo.Socket
-}
-
-export const schema: Schema<Types> = {
+export const schema: Schema<_Types> = {
     inputTypeValidatorMap: {},
     types: {
         message: {
@@ -22,5 +17,8 @@ export const schema: Schema<Types> = {
         },
     },
 }
+
+export type Types = typeof schema.types
+export type Model = typeof schema.model
 
 export default schema
