@@ -7,7 +7,7 @@ export type Schema<
     types: {
         [K in Types]: Type<Types>
     }
-    model: Model<ModelKeys, InputTypes, Types>
+    model: Model<InputTypes, Types, ModelKeys>
 }
 
 export type InputTypeValidatorMap<Keys extends string = string> = {
@@ -15,14 +15,14 @@ export type InputTypeValidatorMap<Keys extends string = string> = {
 }
 
 export type Model<
-    Keys extends string = string,
-    InputType extends string = string,
-    OutputType extends string = string
+    InputTypes extends string = string,
+    Types extends string = string,
+    ModelKeys extends string = string
 > = {
-    [K in Keys]: {
-        inputTypes: TypeInput<InputType>[]
+    [K in ModelKeys]: {
+        inputTypes: TypeInput<InputTypes>[]
         output: {
-            type: OutputType
+            type: Types
             isList?: boolean
         }
     }
