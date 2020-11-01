@@ -3,6 +3,7 @@ import { Query, QueryInput, QueryField, Request } from './request'
 import {
     Model,
     Schema,
+    TypeField,
     Type,
     TypeInput,
     Types,
@@ -41,7 +42,7 @@ const isQuery = <T extends Types, S extends Schema<T>>(
         validateArray(
             query.inputs,
             isQueryInput,
-            schema.model[queryName].inputs,
+            schema.model[queryName].inputTypes,
             schema.inputTypeValidatorMap
         )
 
@@ -51,7 +52,7 @@ const isQuery = <T extends Types, S extends Schema<T>>(
             query.fields,
             isQueryField,
             schema,
-            schema.types[schema.model[queryName].output]
+            schema.types[schema.model[queryName].output.type]
         )
 
     return hasValidInput && hasValidFields
@@ -65,7 +66,7 @@ const isQueryInput = (
     const input = toDictionary<QueryInput>(data)
     const inputType = inputs.find((x) => x.name === input.name)
 
-    return inputType && validatorMap[inputType.valueType](input.value)
+    return inputType && validatorMap[inputType.type](input.value)
 }
 
 const isQueryField = <T extends Types, S extends Schema<T>>(
@@ -73,21 +74,23 @@ const isQueryField = <T extends Types, S extends Schema<T>>(
     schema: S,
     type: Type
 ): data is QueryField => {
-    // TODO: allow array notation for type, i.e. message[] => message
-
     if (typeof data === 'string') {
         return type.fields.includes(data)
     }
 
     const field = toDictionary<QueryField>(data)
 
+    const typeField = type.fields.find(
+        (x) => (x as TypeField).name === field.name
+    ) as TypeField
+
     return (
-        type.fields.includes({ type: field.name }) &&
+        typeField &&
         validateArray(
             field.fields,
             isQueryField,
             schema,
-            schema.types[field.name]
+            schema.types[typeField.type]
         )
     )
 }

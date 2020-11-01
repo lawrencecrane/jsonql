@@ -17,15 +17,16 @@ const schema: Schema<Types> = {
     inputTypeValidatorMap: {},
     types: {
         message: {
-            // TODO: Should we defined output types for these fields?
             fields: ['user', 'message'],
         },
     },
     model: {
         messages: {
-            inputs: [],
-            output: 'message',
-            // output: 'message[]',
+            inputTypes: [],
+            output: {
+                type: 'message',
+                isList: true,
+            },
         },
     },
 }

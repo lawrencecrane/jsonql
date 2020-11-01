@@ -10,8 +10,11 @@ export interface ValueTypeValidatorMap {
 
 export type Model<T extends Types> = {
     [key: string]: {
-        inputs: TypeInput[]
-        output: keyof T
+        inputTypes: TypeInput[]
+        output: {
+            type: keyof T
+            isList?: boolean
+        }
     }
 }
 
@@ -20,17 +23,15 @@ export interface Types {
 }
 
 export interface Type {
-    // TODO: Should we only allow TypeField here, and add valueType -field to it?
-    // Would only be used for documentation?
     fields: (TypeField | string)[]
 }
 
-// TODO: Should valueType be renamed to type and type to name?
 export interface TypeField {
+    name: string
     type: string
 }
 
 export interface TypeInput {
     name: string
-    valueType: string
+    type: string
 }
