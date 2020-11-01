@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "express": "^4.17.1",
-        "jsonql": "file:../packages/jsonql",
+        "ts-jsonql": "file:../../../packages/ts-jsonql",
         "socket.io": "^2.3.0"
     }
 }

@@ -1,7 +1,7 @@
 {
-    "name": "jsonql",
+    "name": "ts-jsonql",
     "version": "1.0.0",
-    "description": "jsonQL",
+    "description": "JsonQL implementation in TypeScript",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {

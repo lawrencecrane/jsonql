@@ -1,7 +1,7 @@
 import express from 'express'
 import http from 'http'
 import socketIo from 'socket.io'
-import createExecutor from 'jsonql'
+import createExecutor from 'ts-jsonql'
 import schema from './schema'
 import resolver from './resolver'
 

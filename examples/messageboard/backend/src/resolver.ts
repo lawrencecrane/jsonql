@@ -1,5 +1,5 @@
 import socketIo from 'socket.io'
-import { Resolver } from 'jsonql'
+import { Resolver } from 'ts-jsonql'
 import { ModelKeys } from './schema'
 
 export interface Context {

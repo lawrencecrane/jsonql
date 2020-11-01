@@ -1,4 +1,8 @@
-import { Schema, DefaultInputTypes, DefaultInputTypeValidatorMap } from 'jsonql'
+import {
+    Schema,
+    DefaultInputTypes,
+    DefaultInputTypeValidatorMap,
+} from 'ts-jsonql'
 
 type Types = 'message'
 
