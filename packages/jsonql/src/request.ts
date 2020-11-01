@@ -1,7 +1,5 @@
-import { Model } from './schema'
-
-export type Request<M extends Model> = {
-    [K in keyof M]?: Query
+export type Request<Keys extends string> = {
+    [K in Keys]?: Query
 }
 
 export interface Query {

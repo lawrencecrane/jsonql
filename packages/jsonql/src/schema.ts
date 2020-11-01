@@ -1,7 +1,7 @@
 export type Schema<
-    InputTypes extends string = string,
-    Types extends string = string,
-    ModelKeys extends string = string
+    InputTypes extends string,
+    Types extends string,
+    ModelKeys extends string
 > = {
     inputTypeValidatorMap: InputTypeValidatorMap<InputTypes>
     types: {
@@ -10,14 +10,14 @@ export type Schema<
     model: Model<InputTypes, Types, ModelKeys>
 }
 
-export type InputTypeValidatorMap<Keys extends string = string> = {
+export type InputTypeValidatorMap<Keys extends string> = {
     [K in Keys]: (x: any) => boolean
 }
 
 export type Model<
-    InputTypes extends string = string,
-    Types extends string = string,
-    ModelKeys extends string = string
+    InputTypes extends string,
+    Types extends string,
+    ModelKeys extends string
 > = {
     [K in ModelKeys]: {
         inputTypes: TypeInput<InputTypes>[]
@@ -28,16 +28,20 @@ export type Model<
     }
 }
 
-export interface Type<T extends string = string> {
+export const isTypeField = <T extends string>(
+    x: TypeField<T> | string
+): x is TypeField<T> => (x as TypeField<string>).name !== undefined
+
+export interface Type<T extends string> {
     fields: (TypeField<T> | string)[]
 }
 
-export interface TypeField<T extends string = string> {
+export interface TypeField<T extends string> {
     name: string
     type: T
 }
 
-export interface TypeInput<T extends string = string> {
+export interface TypeInput<T extends string> {
     name: string
     type: T
 }

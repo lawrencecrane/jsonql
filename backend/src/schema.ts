@@ -2,7 +2,7 @@ import { Schema, DefaultInputTypes, DefaultInputTypeValidatorMap } from 'jsonql'
 
 type Types = 'message'
 
-type ModelKeys = 'messages'
+export type ModelKeys = 'messages'
 
 export const schema: Schema<DefaultInputTypes, Types, ModelKeys> = {
     inputTypeValidatorMap: DefaultInputTypeValidatorMap,
@@ -21,7 +21,5 @@ export const schema: Schema<DefaultInputTypes, Types, ModelKeys> = {
         },
     },
 }
-
-export type Model = typeof schema.model
 
 export default schema

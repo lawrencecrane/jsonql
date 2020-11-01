@@ -1,31 +1,40 @@
 import { Option } from 'prelude-ts'
 import { Query, QueryInput, QueryField, Request } from './request'
 import {
-    Model,
     Schema,
-    TypeField,
     Type,
     TypeInput,
     InputTypeValidatorMap,
+    isTypeField,
 } from './schema'
 import { toDictionary } from './utils'
 
-export const parseRequest = <M extends Model, S extends Schema>(
-    schema: S,
+export const parseRequest = <
+    InputTypes extends string,
+    Types extends string,
+    ModelKeys extends string
+>(
+    schema: Schema<InputTypes, Types, ModelKeys>,
     data: any
-): Option<Request<M>> => {
-    const queries = toDictionary(data)
+): Option<Request<ModelKeys>> => {
+    const queries = toDictionary<Request<ModelKeys>>(data)
 
     return Object.keys(queries).every(
-        (k) => schema.model[k] && isQuery(schema, k as any, (queries as any)[k])
+        (k) =>
+            schema.model[k as ModelKeys] &&
+            isQuery(schema, k, queries[k as ModelKeys])
     )
         ? Option.of(queries)
         : Option.none()
 }
 
-const isQuery = <S extends Schema>(
-    schema: S,
-    queryName: string,
+const isQuery = <
+    InputTypes extends string,
+    Types extends string,
+    ModelKeys extends string
+>(
+    schema: Schema<InputTypes, Types, ModelKeys>,
+    queryName: ModelKeys,
     data: any
 ): data is Query => {
     const query = toDictionary<Query>(data)
@@ -51,10 +60,10 @@ const isQuery = <S extends Schema>(
     return hasValidInput && hasValidFields
 }
 
-const isQueryInput = (
+const isQueryInput = <InputTypes extends string>(
     data: any,
-    inputs: TypeInput[],
-    validatorMap: InputTypeValidatorMap
+    inputs: TypeInput<InputTypes>[],
+    validatorMap: InputTypeValidatorMap<InputTypes>
 ): data is QueryInput => {
     const input = toDictionary<QueryInput>(data)
     const inputType = inputs.find((x) => x.name === input.name)
@@ -62,10 +71,14 @@ const isQueryInput = (
     return inputType && validatorMap[inputType.type](input.value)
 }
 
-const isQueryField = <S extends Schema>(
+const isQueryField = <
+    InputTypes extends string,
+    Types extends string,
+    ModelKeys extends string
+>(
     data: any,
-    schema: S,
-    type: Type
+    schema: Schema<InputTypes, Types, ModelKeys>,
+    type: Type<Types>
 ): data is QueryField => {
     if (typeof data === 'string') {
         return type.fields.includes(data)
@@ -73,9 +86,9 @@ const isQueryField = <S extends Schema>(
 
     const field = toDictionary<QueryField>(data)
 
-    const typeField = type.fields.find(
-        (x) => (x as TypeField).name === field.name
-    ) as TypeField
+    const typeField = type.fields
+        .filter(isTypeField)
+        .find((x) => x.name === field.name)
 
     return (
         typeField &&
