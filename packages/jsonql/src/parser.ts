@@ -6,31 +6,24 @@ import {
     TypeField,
     Type,
     TypeInput,
-    Types,
-    ValueTypeValidatorMap,
+    InputTypeValidatorMap,
 } from './schema'
 import { toDictionary } from './utils'
 
-export const parseRequest = <
-    T extends Types,
-    M extends Model<T>,
-    S extends Schema<T>
->(
+export const parseRequest = <M extends Model, S extends Schema>(
     schema: S,
     data: any
-): Option<Request<T, M>> => {
+): Option<Request<M>> => {
     const queries = toDictionary(data)
 
     return Object.keys(queries).every(
-        (k) =>
-            schema.model[k] &&
-            isQuery<T, S>(schema, k as any, (queries as any)[k])
+        (k) => schema.model[k] && isQuery(schema, k as any, (queries as any)[k])
     )
         ? Option.of(queries)
         : Option.none()
 }
 
-const isQuery = <T extends Types, S extends Schema<T>>(
+const isQuery = <S extends Schema>(
     schema: S,
     queryName: string,
     data: any
@@ -61,7 +54,7 @@ const isQuery = <T extends Types, S extends Schema<T>>(
 const isQueryInput = (
     data: any,
     inputs: TypeInput[],
-    validatorMap: ValueTypeValidatorMap
+    validatorMap: InputTypeValidatorMap
 ): data is QueryInput => {
     const input = toDictionary<QueryInput>(data)
     const inputType = inputs.find((x) => x.name === input.name)
@@ -69,7 +62,7 @@ const isQueryInput = (
     return inputType && validatorMap[inputType.type](input.value)
 }
 
-const isQueryField = <T extends Types, S extends Schema<T>>(
+const isQueryField = <S extends Schema>(
     data: any,
     schema: S,
     type: Type

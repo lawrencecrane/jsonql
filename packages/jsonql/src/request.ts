@@ -1,6 +1,6 @@
-import { Types, Model } from './schema'
+import { Model } from './schema'
 
-export type Request<T extends Types, M extends Model<T>> = {
+export type Request<M extends Model> = {
     [K in keyof M]?: Query
 }
 
