@@ -1,5 +1,7 @@
-import { writable } from 'svelte/store'
+import { messages } from './message/store'
 
 export const store = {
-    name: writable(''),
+    messages,
 }
+
+export { updater } from './message/store'

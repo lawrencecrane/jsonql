@@ -1,13 +1,14 @@
 <script lang="ts">
     import { onDestroy } from 'svelte'
+    import { Message } from 'types/dist/types'
     import { store } from './store'
 
     // -- Properties
-    let name: string
+    let messages: Message[]
     // --
 
-    const unsubscribe = store.name.subscribe((value) => {
-        name = value
+    const unsubscribe = store.messages.subscribe((value) => {
+        messages = value
     })
 
     onDestroy(unsubscribe)
@@ -15,26 +16,16 @@
 
 <style>
     main {
-        text-align: center;
-        padding: 1em;
-        max-width: 240px;
+        padding: 1rem;
+        max-width: 900px;
         margin: 0 auto;
-    }
-
-    h1 {
-        color: #ff3e00;
-        text-transform: uppercase;
-        font-size: 4em;
-        font-weight: 100;
-    }
-
-    @media (min-width: 640px) {
-        main {
-            max-width: none;
-        }
     }
 </style>
 
 <main>
-    <h1>{name}</h1>
+    {#each messages as message}
+        <div>
+            <p>{message.message}</p>
+        </div>
+    {/each}
 </main>

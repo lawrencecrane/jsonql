@@ -1,24 +1,18 @@
 import App from './App.svelte'
-import { store } from './store'
+import { updater } from './store'
 import io from 'socket.io-client'
-import { schema } from 'types'
+import { queryMessages } from './store/message/action'
 
 const app = new App({
     target: document.body,
 })
 
-store.name.set('hello from the otherside!')
-
 const socket = io(envThis.__WEBSOCKET_URI__)
 
-const messagesQuery: schema.Request = {
-    messages: {
-        fields: ['message', { name: 'user', fields: ['name'] }],
-    },
-}
+socket.on('connect', () => queryMessages(socket))
 
-socket.on('connect', () => socket.emit('jsonql', messagesQuery))
-
-socket.on('jsonql', console.log)
+socket.on('jsonql', (res: any) =>
+    Object.keys(res).forEach((key) => updater[key] && updater[key](res[key]))
+)
 
 export default app
