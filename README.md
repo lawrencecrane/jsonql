@@ -137,3 +137,20 @@ But having build to output that JSON would lend itself to writing backend with d
 - [messageboard](./examples/messageboard) contains example use case for it.
 
 [ts-jsonql](./packages/ts-jsonql) contains only pure functions, which shows that the abstraction / design patters that are in the core of this, do not require any network related code.
+
+## Running Examples with Docker
+
+Build images in the root of this repository:
+
+```bash
+docker build -t messageboard-frontend -f examples/messageboard/frontend/Dockerfile .
+docker build -t messageboard-backend -f examples/messageboard/backend/Dockerfile .
+```
+
+Run with docker-compose in root of this repository:
+
+```bash
+docker-compose -f examples/messageboard/docker-compose.yaml up
+```
+
+Site is available at [localhost:8080](http://localhost:8080).

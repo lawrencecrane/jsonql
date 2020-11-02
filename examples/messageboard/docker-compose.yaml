@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: messageboard-frontend
+    ports:
+      - 8080:80
+  backend:
+    image: messageboard-backend
+    ports:
+      - 3000:3000
