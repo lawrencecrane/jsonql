@@ -2,7 +2,7 @@ import express from 'express'
 import http from 'http'
 import socketIo from 'socket.io'
 import createExecutor from 'ts-jsonql'
-import schema from './schema'
+import { schema } from 'types'
 import resolver from './resolver'
 
 const PORT = process.env.PORT || 3000
@@ -11,7 +11,7 @@ const app = express()
 const server = http.createServer(app)
 const io = socketIo(server)
 
-const executor = createExecutor(schema, resolver)
+const executor = createExecutor(schema.schema, resolver)
 
 io.on('connection', (socket) => {
     socket.on('jsonql', (data) => {
