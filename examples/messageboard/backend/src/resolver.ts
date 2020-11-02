@@ -1,15 +1,19 @@
 import socketIo from 'socket.io'
-import { Resolver } from 'ts-jsonql'
 import { schema } from 'types'
 
 export interface Context {
     socket: socketIo.Socket
 }
 
-export const resolver: Resolver<Context, schema.ModelKeys> = {
+export const resolver: schema.Resolver<Context> = {
     messages: () =>
         Promise.resolve([
-            { user: 'joe', message: 'Hello from the otherside!' },
+            {
+                message: 'Hello from the otherside!',
+                user: {
+                    name: 'joe',
+                },
+            },
         ]),
 }
 
