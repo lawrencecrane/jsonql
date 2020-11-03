@@ -1,4 +1,4 @@
-import { Query, QueryInput, QueryField, Request } from './request'
+import { Query, QueryField, Request } from './request'
 import {
     Schema,
     Type,
@@ -6,7 +6,7 @@ import {
     InputTypeValidatorMap,
     isTypeField,
 } from './schema'
-import { toDictionary, Maybe, None } from './utils'
+import { toDictionary, Maybe, None, isEmpty } from './utils'
 
 export const parseRequest = <
     InputTypes extends string,
@@ -40,14 +40,11 @@ const isQuery = <
 ): data is Query => {
     const query = toDictionary<Query>(data)
 
-    const hasValidInput =
-        !query.inputs ||
-        validateArray(
-            query.inputs,
-            isQueryInput,
-            schema.model[queryName].inputTypes,
-            schema.inputTypeValidatorMap
-        )
+    const hasValidInput = isValidInput(
+        query.inputs,
+        schema.model[queryName].inputTypes,
+        schema.inputTypeValidatorMap
+    )
 
     const hasValidFields =
         !query.fields ||
@@ -62,15 +59,18 @@ const isQuery = <
     return hasValidInput && hasValidFields
 }
 
-const isQueryInput = <InputTypes extends string>(
+const isValidInput = <InputTypes extends string>(
     data: any,
-    inputs: TypeInput<InputTypes>[],
+    inputTypes: TypeInput<InputTypes>[],
     validatorMap: InputTypeValidatorMap<InputTypes>
-): data is QueryInput => {
-    const input = toDictionary<QueryInput>(data)
-    const inputType = inputs.find((x) => x.name === input.name)
+): boolean => {
+    const inputs = toDictionary<{ [key: string]: any }>(data)
 
-    return inputType && validatorMap[inputType.type](input.value)
+    return inputTypes.every(
+        (inputType) =>
+            (isEmpty(inputs[inputType.name]) && inputType.optional) ||
+            validatorMap[inputType.type](inputs[inputType.name])
+    )
 }
 
 const isQueryField = <

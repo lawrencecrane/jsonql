@@ -1,5 +1,8 @@
 export const toDictionary = <T extends {}>(x: any): T => x || {}
 
+export const isEmpty = <T>(x: T | null | undefined): boolean =>
+    x === null || x === undefined
+
 export const chainPromiseCreators = async (
     ...fs: (() => Promise<any>)[]
 ): Promise<any> => fs.reduce((prev, f) => prev.then(f), Promise.resolve())

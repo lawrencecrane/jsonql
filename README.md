@@ -20,12 +20,9 @@ Just plain old JSON with pre-defined fields for querying (and defining schema).
 ```json
 {
   "messages": {
-    "inputs": [
-      {
-        "name": "channel",
-        "value": "main"
-      }
-    ],
+    "inputs": {
+      "channel": "main"
+    },
     "fields": [
       "value",
       {
@@ -87,7 +84,8 @@ query {
       "inputTypes": [
         {
           "name": "channel",
-          "type": "string"
+          "type": "string",
+          "optional": true
         }
       ],
       "output": {

@@ -4,19 +4,20 @@ export type Request<Keys extends string> = {
     [K in Keys]?: Query
 }
 
-export interface Query {
-    inputs?: QueryInput[]
-    fields?: (QueryField | string)[]
+export interface Query<T extends string | number | symbol = string> {
+    inputs?: {
+        [key: string]: any
+    }
+    fields?: (QueryField<T> | T)[]
 }
 
-export interface QueryField {
-    name: string
-    fields: (QueryField | string)[]
-}
+export const isQueryField = <T extends string | number | symbol>(
+    x: QueryField<T> | T
+): x is QueryField<T> => (x as QueryField).name !== undefined
 
-export interface QueryInput {
-    name: string
-    value: any
+export interface QueryField<T extends string | number | symbol = string> {
+    name: T
+    fields: (QueryField<T> | T)[]
 }
 
 export const generateQueries = <

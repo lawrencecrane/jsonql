@@ -46,4 +46,5 @@ export interface TypeField<T extends string> {
 export interface TypeInput<T extends string> {
     name: string
     type: T
+    optional?: boolean
 }
