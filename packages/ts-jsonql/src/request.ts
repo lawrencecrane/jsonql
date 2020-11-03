@@ -29,13 +29,13 @@ export const generateQueries = <
 ): Request<ModelKeys> =>
     Object.keys(schema.model).reduce(
         (queries: Request<ModelKeys>, key: ModelKeys) => {
-            const type = schema.model[key].output.type
-
-            const query: Query = {
-                fields: reduceFields(schema.types, type, maxRecursion),
+            queries[key] = {
+                fields: reduceFields(
+                    schema.types,
+                    schema.model[key].output.type,
+                    maxRecursion
+                ),
             }
-
-            queries[key] = query
 
             return queries
         },
@@ -52,9 +52,7 @@ const reduceFields = <Types extends string>(
         return []
     }
 
-    const fields = types[type].fields
-
-    return fields.map((field) => {
+    return types[type].fields.map((field) => {
         if (isTypeField(field)) {
             return {
                 name: field.name,
