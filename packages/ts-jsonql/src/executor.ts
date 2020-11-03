@@ -8,18 +8,19 @@ async function parallelQueryReducer<Context, ModelKeys extends string>(
     context: Context,
     queries: Request<ModelKeys>
 ): Promise<{ [K in keyof Request<ModelKeys>]: any }> {
-    const keys = Object.keys(queries)
+    const keys = Object.keys(queries) as ModelKeys[]
 
-    return Promise.all(
-        keys.map((k) =>
-            resolver[k as ModelKeys](context, queries[k as ModelKeys])
-        )
-    ).then((res) =>
-        keys.reduce((out: { [key: string]: any }, key, i) => {
-            out[key] = res[i]
-            return out
-        }, {})
-    ) as any
+    return Promise.all(keys.map((k) => resolver[k](context, queries[k]))).then(
+        (res) =>
+            keys.reduce(
+                (out: { [K in keyof Request<ModelKeys>]?: any }, key, i) => {
+                    out[key] = res[i]
+
+                    return out
+                },
+                {}
+            )
+    )
 }
 
 export const INVALID_QUERIES = 'INVALID_QUERIES'
