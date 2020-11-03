@@ -1,8 +1,8 @@
-import socketIo from 'socket.io'
+import WebSocket from 'ws'
 import { schema } from 'types'
 
 export interface Context {
-    socket: socketIo.Socket
+    ws: WebSocket
 }
 
 export const resolver: schema.Resolver<Context> = {

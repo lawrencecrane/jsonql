@@ -1,7 +1,3 @@
-import { messages } from './message/store'
+import { store } from './store'
 
-export const store = {
-    messages,
-}
-
-export { updater } from './message/store'
+export default store

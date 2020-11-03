@@ -12,18 +12,16 @@
     "author": "Lauri Kurki",
     "license": "ISC",
     "devDependencies": {
-        "@types/express": "^4.17.8",
         "@types/node": "^14.14.6",
-        "@types/socket.io": "^2.1.11",
+        "@types/ws": "^7.2.9",
         "nodemon": "^2.0.6",
         "prettier": "^2.1.2",
         "ts-node": "^9.0.0",
         "typescript": "^4.0.5"
     },
     "dependencies": {
-        "express": "^4.17.1",
-        "socket.io": "^2.3.0",
         "ts-jsonql": "file:../../../packages/ts-jsonql",
-        "types": "file:../types"
+        "types": "file:../types",
+        "ws": "^7.3.1"
     }
 }

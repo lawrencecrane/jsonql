@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onDestroy } from 'svelte'
     import { Message } from 'types/dist/types'
-    import { store } from './store'
+    import store from './store'
 
     // -- Properties
     let messages: Message[]

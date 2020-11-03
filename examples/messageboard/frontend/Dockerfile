@@ -1,7 +1,7 @@
 # Image for building assets
 FROM node:lts-alpine as builder
 
-ARG WEBSOCKET_URI=http://localhost:3000
+ARG WEBSOCKET_URI=ws://localhost:3000
 
 WORKDIR /home/node/examples/messageboard/frontend
 

@@ -1,4 +1,4 @@
 import { schema } from 'types'
 
-export const queryMessages = (socket: SocketIOClient.Socket) =>
-    socket.emit('jsonql', schema.QUERIES['messages'])
+export const queryMessages = (ws: WebSocket) =>
+    ws.send(JSON.stringify({ messages: schema.QUERIES.messages }))

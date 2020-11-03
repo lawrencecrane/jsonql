@@ -1,26 +1,18 @@
-import express from 'express'
-import http from 'http'
-import socketIo from 'socket.io'
+import WebSocket from 'ws'
 import createExecutor from 'ts-jsonql'
 import { schema } from 'types'
 import resolver from './resolver'
 
-const PORT = process.env.PORT || 3000
-
-const app = express()
-const server = http.createServer(app)
-const io = socketIo(server)
+const PORT = parseInt(process.env.PORT) || 3000
 
 const executor = createExecutor(schema.schema, resolver)
 
-io.on('connection', (socket) => {
-    socket.on('jsonql', (data) => {
-        executor({ socket }, data).then((res) => {
-            socket.emit('jsonql', res)
-        })
-    })
-})
+const wss = new WebSocket.Server({ port: PORT })
 
-server.listen(PORT, () => {
-    console.log(`Server listening at port ${PORT}`)
+wss.on('connection', (ws) => {
+    ws.on('message', (data) => {
+        executor({ ws }, JSON.parse(typeof data === 'string' && data))
+            .then((res) => ws.send(JSON.stringify(res)))
+            .catch(console.error)
+    })
 })
