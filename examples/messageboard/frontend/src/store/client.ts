@@ -1,5 +1,5 @@
 import { updater } from './store'
-import { queryMessages } from './message/action'
+import { subscribeToMessages } from './message/action'
 
 export const createClient = (uri: string): WebSocket => {
     const ws = new WebSocket(uri)
@@ -12,7 +12,7 @@ export const createClient = (uri: string): WebSocket => {
         )
     }
 
-    ws.onopen = () => queryMessages(ws)
+    ws.onopen = () => subscribeToMessages(ws)
 
     return ws
 }

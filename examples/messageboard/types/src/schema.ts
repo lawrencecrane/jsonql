@@ -9,19 +9,23 @@ import {
 } from 'ts-jsonql'
 import * as types from './types'
 
-type Types = 'user' | 'message'
+type Types = 'void' | 'user' | 'message'
 
-type ModelKeys = 'messages'
+type ModelKeys = 'messages' | 'sendMessage'
 
 export const schema: Schema<DefaultInputTypes, Types, ModelKeys> = {
     inputTypeValidatorMap: DefaultInputTypeValidatorMap,
     types: {
+        void: {
+            fields: [],
+        },
         user: {
             fields: ['name'],
         },
         message: {
             fields: [
                 'message',
+                'createdAt',
                 {
                     name: 'user',
                     type: 'user',
@@ -37,6 +41,15 @@ export const schema: Schema<DefaultInputTypes, Types, ModelKeys> = {
                 isList: true,
             },
         },
+        sendMessage: {
+            inputTypes: [
+                { name: 'message', type: 'string' },
+                { name: 'user', type: 'string' },
+            ],
+            output: {
+                type: 'void',
+            },
+        },
     },
 }
 
@@ -44,6 +57,7 @@ export default schema
 
 export interface Resolver<C> extends _Resolver<C, ModelKeys> {
     messages: Handler<C, Partial<types.Message>[]>
+    sendMessage: Handler<C, void>
 }
 
 export type Request = _Request<ModelKeys>

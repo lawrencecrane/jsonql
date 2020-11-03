@@ -4,5 +4,6 @@ export interface User {
 
 export interface Message {
     message: string
+    createdAt: number
     user: User
 }

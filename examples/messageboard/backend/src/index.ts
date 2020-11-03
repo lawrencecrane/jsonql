@@ -11,8 +11,9 @@ const wss = new WebSocket.Server({ port: PORT })
 
 wss.on('connection', (ws) => {
     ws.on('message', (data) => {
-        executor({ ws }, JSON.parse(typeof data === 'string' && data))
-            .then((res) => ws.send(JSON.stringify(res)))
-            .catch(console.error)
+        executor(
+            { initiator: ws, all: wss.clients },
+            JSON.parse(typeof data === 'string' && data)
+        ).catch(console.error)
     })
 })
