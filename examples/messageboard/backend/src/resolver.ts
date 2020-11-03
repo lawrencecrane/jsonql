@@ -35,6 +35,7 @@ export const resolver: schema.Resolver<Context> = {
         // so that we can have multiple instances of this webserver
         ;[...context.all].forEach((ws) => {
             ws.subscriptions &&
+                ws.subscriptions.messages &&
                 ws.send(
                     JSON.stringify({
                         messages: [
