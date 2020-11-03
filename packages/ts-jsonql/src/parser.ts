@@ -15,14 +15,15 @@ export const parseRequest = <
     ModelKeys extends string
 >(
     schema: Schema<InputTypes, Types, ModelKeys>,
-    data: any
+    data: any,
+    maxRecursion = 4
 ): Option<Request<ModelKeys>> => {
     const queries = toDictionary<Request<ModelKeys>>(data)
 
     return Object.keys(queries).every(
         (k) =>
             schema.model[k as ModelKeys] &&
-            isQuery(schema, k, queries[k as ModelKeys])
+            isQuery(schema, k, queries[k as ModelKeys], maxRecursion)
     )
         ? Option.of(queries)
         : Option.none()
@@ -35,7 +36,8 @@ const isQuery = <
 >(
     schema: Schema<InputTypes, Types, ModelKeys>,
     queryName: ModelKeys,
-    data: any
+    data: any,
+    maxRecursion = 4
 ): data is Query => {
     const query = toDictionary<Query>(data)
 
@@ -54,7 +56,8 @@ const isQuery = <
             query.fields,
             isQueryField,
             schema,
-            schema.types[schema.model[queryName].output.type]
+            schema.types[schema.model[queryName].output.type],
+            maxRecursion
         )
 
     return hasValidInput && hasValidFields
@@ -78,8 +81,14 @@ const isQueryField = <
 >(
     data: any,
     schema: Schema<InputTypes, Types, ModelKeys>,
-    type: Type<Types>
+    type: Type<Types>,
+    maxRecursion = 4,
+    currentRecursion = 0
 ): data is QueryField => {
+    if (maxRecursion === currentRecursion) {
+        return false
+    }
+
     if (typeof data === 'string') {
         return type.fields.includes(data)
     }
@@ -96,7 +105,9 @@ const isQueryField = <
             field.fields,
             isQueryField,
             schema,
-            schema.types[typeField.type]
+            schema.types[typeField.type],
+            maxRecursion,
+            currentRecursion + 1
         )
     )
 }

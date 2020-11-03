@@ -32,10 +32,11 @@ export function createExecutor<
 >(
     schema: Schema<InputTypes, Types, ModelKeys>,
     resolver: Resolver<Context, ModelKeys>,
+    maxRecursion = 4,
     reducer = parallelQueryReducer
 ) {
     return async function (context: Context, data: any): Promise<any> {
-        const queries = parseRequest(schema, data)
+        const queries = parseRequest(schema, data, maxRecursion)
 
         return queries.isNone()
             ? Promise.reject(INVALID_QUERIES)
