@@ -4,9 +4,7 @@ export type Schema<
     ModelKeys extends string
 > = {
     inputTypeValidatorMap: InputTypeValidatorMap<InputTypes>
-    types: {
-        [K in Types]: Type<Types>
-    }
+    types: Typings<Types>
     model: Model<InputTypes, Types, ModelKeys>
 }
 
@@ -26,6 +24,10 @@ export type Model<
             isList?: boolean
         }
     }
+}
+
+export type Typings<Types extends string> = {
+    [K in Types]: Type<Types>
 }
 
 export const isTypeField = <T extends string>(

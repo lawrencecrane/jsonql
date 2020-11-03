@@ -5,6 +5,7 @@ import {
     Handler,
     DefaultInputTypes,
     DefaultInputTypeValidatorMap,
+    generateQueries,
 } from 'ts-jsonql'
 import * as types from './types'
 
@@ -39,10 +40,12 @@ export const schema: Schema<DefaultInputTypes, Types, ModelKeys> = {
     },
 }
 
+export default schema
+
 export interface Resolver<C> extends _Resolver<C, ModelKeys> {
     messages: Handler<C, Partial<types.Message>[]>
 }
 
 export type Request = _Request<ModelKeys>
 
-export default schema
+export const QUERIES = generateQueries(schema)
