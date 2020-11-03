@@ -2,6 +2,7 @@ import { Request } from './request'
 import { Schema } from './schema'
 import { parseRequest } from './parser'
 import { Resolver } from './resolver'
+import { isNone } from './utils'
 
 async function parallelQueryReducer<Context, ModelKeys extends string>(
     resolver: Resolver<Context, ModelKeys>,
@@ -39,9 +40,9 @@ export function createExecutor<
     return async function (context: Context, data: any): Promise<any> {
         const queries = parseRequest(schema, data, maxRecursion)
 
-        return queries.isNone()
+        return isNone(queries)
             ? Promise.reject(INVALID_QUERIES)
-            : reducer(resolver, context, queries.getOrThrow())
+            : reducer(resolver, context, queries)
     }
 }
 

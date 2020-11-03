@@ -1,4 +1,3 @@
-import { Option } from 'prelude-ts'
 import { Query, QueryInput, QueryField, Request } from './request'
 import {
     Schema,
@@ -7,7 +6,7 @@ import {
     InputTypeValidatorMap,
     isTypeField,
 } from './schema'
-import { toDictionary } from './utils'
+import { toDictionary, Maybe, None } from './utils'
 
 export const parseRequest = <
     InputTypes extends string,
@@ -17,7 +16,7 @@ export const parseRequest = <
     schema: Schema<InputTypes, Types, ModelKeys>,
     data: any,
     maxRecursion = 4
-): Option<Request<ModelKeys>> => {
+): Maybe<Request<ModelKeys>> => {
     const queries = toDictionary<Request<ModelKeys>>(data)
 
     return Object.keys(queries).every(
@@ -25,8 +24,8 @@ export const parseRequest = <
             schema.model[k as ModelKeys] &&
             isQuery(schema, k, queries[k as ModelKeys], maxRecursion)
     )
-        ? Option.of(queries)
-        : Option.none()
+        ? queries
+        : None
 }
 
 const isQuery = <
