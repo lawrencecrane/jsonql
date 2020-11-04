@@ -21,7 +21,8 @@ export class Store {
     // so that we can have multiple instances of this webserver
     broadcastMessage(message: Message) {
         ;[...(this.wss.clients as Set<StatefulWebSocket>)].forEach((ws) => {
-            ws.subscriptions &&
+            ws.readyState === WebSocket.OPEN &&
+                ws.subscriptions &&
                 ws.subscriptions.messages &&
                 ws.send(
                     JSON.stringify({
