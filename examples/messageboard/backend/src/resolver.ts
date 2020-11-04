@@ -3,20 +3,49 @@ import { schema } from 'types'
 import { Query, getSpecificFields } from 'ts-jsonql'
 import { Message } from 'types/dist/types'
 
+// TODO: remove this, and use stamped user id to store subscribed queries
 export interface StatefulWebSocket extends WebSocket {
     subscriptions?: {
-        messages: Query
+        messages?: Query
+    }
+}
+
+export class Store {
+    private wss: WebSocket.Server
+
+    constructor(wss: WebSocket.Server) {
+        this.wss = wss
+    }
+
+    // TODO: send to Kafka or similar,
+    // so that we can have multiple instances of this webserver
+    broadcastMessage(message: Message) {
+        ;[...(this.wss.clients as Set<StatefulWebSocket>)].forEach((ws) => {
+            ws.subscriptions &&
+                ws.subscriptions.messages &&
+                ws.send(
+                    JSON.stringify({
+                        messages: [
+                            getSpecificFields(
+                                message,
+                                ws.subscriptions.messages.fields as any
+                            ),
+                        ],
+                    })
+                )
+        })
     }
 }
 
 export interface Context {
-    initiator: StatefulWebSocket
-    all: Set<StatefulWebSocket>
+    ws: StatefulWebSocket
+    store: Store
 }
 
 export const resolver: schema.Resolver<Context> = {
     messages: (context, query) => {
-        context.initiator.subscriptions = {
+        context.ws.subscriptions = {
+            ...(context.ws.subscriptions || {}),
             messages: query,
         }
 
@@ -31,24 +60,7 @@ export const resolver: schema.Resolver<Context> = {
             },
         }
 
-        // TODO: send to Kafka or similar,
-        // so that we can have multiple instances of this webserver
-        ;[...context.all].forEach((ws) => {
-            ws.subscriptions &&
-                ws.subscriptions.messages &&
-                ws.send(
-                    JSON.stringify({
-                        messages: [
-                            getSpecificFields(
-                                message,
-                                ws.subscriptions.messages.fields as any
-                            ),
-                        ],
-                    })
-                )
-        })
-
-        return Promise.resolve()
+        return Promise.resolve(context.store.broadcastMessage(message))
     },
 }
 
