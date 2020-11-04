@@ -1,4 +1,5 @@
-FROM node:lts-alpine
+## Image to build server
+FROM node:lts-alpine as builder
 
 WORKDIR /home/node/packages/ts-jsonql
 
@@ -18,4 +19,11 @@ COPY examples/messageboard/backend/ ./
 
 RUN npm run build
 
-CMD ["npm", "start"]
+## Image to run server
+FROM node:lts-alpine as runtime
+
+WORKDIR /home/node
+
+COPY --from=builder /home/node/examples/messageboard/backend/dist/ ./dist/
+
+CMD ["node", "dist/index.js"]
